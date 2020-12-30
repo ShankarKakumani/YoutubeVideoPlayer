@@ -40,7 +40,7 @@ allprojects {
 }
 ```
 
-add GlideSlider
+add YoutubeVideoPlayer
 
 ```groovy
 dependencies {
