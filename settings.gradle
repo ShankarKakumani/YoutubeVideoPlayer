@@ -1,0 +1,3 @@
+include ':youtube_video_player'
+include ':app'
+rootProject.name = "YoutubeVideoPlayer"
