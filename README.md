@@ -71,7 +71,7 @@ Replace MainActivity.this with your Activity
 
  ```java
  
- YoutubeVideoPlayer.playVideo(this,"h2JH0vqDcYc");
+ YoutubeVideoPlayer.playVideo(MainActivity.this,"h2JH0vqDcYc");
 
 ```   
 
