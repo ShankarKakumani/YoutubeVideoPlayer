@@ -2,9 +2,12 @@
 
 - Edited from https://github.com/PierfrancescoSoffritti/android-youtube-player.git
  
-## Demo
+## APK
+Download apk file here [YoutubeVideoPlayer](https://github.com/ShankarKakumani/SampleAPK/blob/main/YoutubeVideoPlayer.apk)
+```
+https://github.com/ShankarKakumani/SampleAPK/blob/main/YoutubeVideoPlayer.apk
+```
 
-![](https://s2.gifyu.com/images/glide_slider.gif)
  
 ## Usage
 
@@ -60,10 +63,11 @@ Add permissions (if necessary) to your `AndroidManifest.xml`
 Usage:
  
 ```java
-YoutubeVideoPlayer.playVideo(this,VideoID);
+YoutubeVideoPlayer.playVideo(MainActivity.this,VideoID);
 
 ```        
 Replace VideoID with youtube video ID.
+Replace MainActivity.this with your Activity
 
  ```java
  
