@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     android:theme="@style/YoutubePlayer">
+
 
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
         android:id="@+id/youtube_player_view"
@@ -16,16 +18,6 @@
         app:enableAutomaticInitialization="true" />
 
 
-    <TextView
-        android:id="@+id/videoName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="Video Name"
-        android:textSize="15sp"
-        android:layout_marginStart="10dp"
-        android:visibility="gone"
-        />
 
     <TextView
         android:id="@+id/qualityText"
@@ -36,10 +28,28 @@
         android:textSize="10sp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="5dp"
-        android:textColor="@color/blue_grey_200"
-        >
-
-    </TextView>
+        android:textColor="@color/white"
+        />
 
 
-</LinearLayout>
+
+    <ImageButton
+        android:id="@+id/fullScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fullscreen_24dp"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"
+        android:layout_marginEnd="20dp"
+        style="@style/SelectableItemBackground" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"
+        android:layout_marginEnd="20dp"
+        style="@style/SelectableItemBackground" />
+</RelativeLayout>

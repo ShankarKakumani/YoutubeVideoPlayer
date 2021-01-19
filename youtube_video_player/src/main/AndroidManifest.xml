@@ -6,6 +6,7 @@
         <activity android:name=".Player"
             android:configChanges="orientation|screenSize|locale"
             android:screenOrientation="sensorLandscape"
+            android:hardwareAccelerated="true"
             />
     </application>
 

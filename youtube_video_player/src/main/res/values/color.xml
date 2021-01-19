@@ -6,5 +6,7 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="blue_grey_600">#546E7A</color>
     <color name="blue_900">#0D47A1</color>
+    <color name="transparent">#00000000</color>
+    <color name="pink_300">#F06292</color>
 
 </resources>

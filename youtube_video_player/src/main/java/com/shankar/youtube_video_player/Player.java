@@ -16,6 +16,7 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,8 @@ public class Player extends AppCompatActivity {
 
     YouTubePlayerView youTubePlayerView;
     private PlayerConstants.PlaybackQuality playbackQuality;
-    TextView videoName;
+    ImageButton backButton, fullScreen;
+    TextView qualityText;
 
     //For Full Screen
 
@@ -59,7 +61,9 @@ public class Player extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.show();
+
         }
+
     };
     private boolean mVisible;
     private final Runnable mHideRunnable = this::hide;
@@ -75,7 +79,8 @@ public class Player extends AppCompatActivity {
         setContentView(R.layout.activity_player);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        videoName = findViewById(R.id.videoName);
+        fullScreen = findViewById(R.id.fullScreen);
+        backButton = findViewById(R.id.backButton);
         playYoutubeVideo();
 
 
@@ -89,14 +94,11 @@ public class Player extends AppCompatActivity {
 
         youTubePlayerView.getPlayerUiController().showYouTubeButton(false);
         youTubePlayerView.getPlayerUiController().showFullscreenButton(false);
-        youTubePlayerView.getPlayerUiController().showBufferingProgress(true);
         youTubePlayerView.getPlayerUiController().showMenuButton(false);
-        youTubePlayerView.getPlayerUiController().showVideoTitle(true);
+        youTubePlayerView.getPlayerUiController().showVideoTitle(false);
+        youTubePlayerView.getPlayerUiController().showBufferingProgress(true);
 
         youTubePlayerView.enterFullScreen();
-
-
-        initPictureInPicture(youTubePlayerView);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -119,6 +121,7 @@ public class Player extends AppCompatActivity {
             public void onStateChange(@NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerState state) {
                 super.onStateChange(youTubePlayer, state);
                 playerStateToString(state);
+
             }
 
 
@@ -159,11 +162,24 @@ public class Player extends AppCompatActivity {
         });
     }
 
+    private void checkFullScreen() {
+        if(youTubePlayerView.isFullScreen())
+        {
+            youTubePlayerView.exitFullScreen();
+            fullScreen.setImageDrawable(ContextCompat.getDrawable(Player.this, R.drawable.ic_fullscreen_exit_24dp));
+        }
+
+        else
+        {
+            youTubePlayerView.enterFullScreen();
+            fullScreen.setImageDrawable(ContextCompat.getDrawable(Player.this, R.drawable.ic_fullscreen_24dp));
+        }
+    }
 
 
     private void QualityManager(YouTubePlayerView youTubePlayerView, PlayerConstants.PlaybackQuality playbackQuality) {
 
-        TextView qualityText = findViewById(R.id.qualityText);
+        qualityText = findViewById(R.id.qualityText);
         switch (playbackQuality) {
 
             case SMALL:
@@ -202,30 +218,15 @@ public class Player extends AppCompatActivity {
         if (qualityText.getParent() != null) {
             ((ViewGroup) qualityText.getParent()).removeView(qualityText); // <- fix
         }
+
+        backButton.setVisibility(View.VISIBLE);
+        fullScreen.setVisibility(View.VISIBLE);
+        youTubePlayerView.getPlayerUiController().addView(backButton);
+        youTubePlayerView.getPlayerUiController().addView(fullScreen);
         youTubePlayerView.getPlayerUiController().addView(qualityText);
 
-    }
-
-
-    private void initPictureInPicture(YouTubePlayerView youTubePlayerView) {
-        ImageView pictureInPictureView = new ImageView(this);
-        pictureInPictureView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fullscreen_24dp));
-
-        pictureInPictureView.setOnClickListener( view -> {
-            if(youTubePlayerView.isFullScreen())
-            {
-                youTubePlayerView.exitFullScreen();
-                pictureInPictureView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fullscreen_exit_24dp));
-            }
-
-            else
-            {
-                youTubePlayerView.enterFullScreen();
-                pictureInPictureView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fullscreen_24dp));
-            }
-        });
-
-        youTubePlayerView.getPlayerUiController().addView( pictureInPictureView );
+        fullScreen.setOnClickListener(v -> checkFullScreen());
+        backButton.setOnClickListener(v -> onBackPressed());
 
     }
 
@@ -277,8 +278,8 @@ public class Player extends AppCompatActivity {
 
 
     private void initializeCustomButtons(float second,YouTubePlayer youTubePlayer) {
-        Drawable customAction1Icon = ContextCompat.getDrawable(this, R.drawable.ic_replay_30_white_24);
-        Drawable customAction2Icon = ContextCompat.getDrawable(this, R.drawable.ic_forward_30_white_24);
+        Drawable customAction1Icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_replay_30_24);
+        Drawable customAction2Icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_forward_30_24);
         assert customAction1Icon != null;
         assert customAction2Icon != null;
 
@@ -294,12 +295,14 @@ public class Player extends AppCompatActivity {
     private void showCustomActionsToPlayer() {
         youTubePlayerView.getPlayerUiController().showCustomAction1(true);
         youTubePlayerView.getPlayerUiController().showCustomAction2(true);
+
     }
 
 
     private void removeCustomActionsFromPlayer() {
         youTubePlayerView.getPlayerUiController().showCustomAction1(false);
         youTubePlayerView.getPlayerUiController().showCustomAction2(false);
+
     }
 
 
@@ -319,6 +322,7 @@ public class Player extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
+
         }
         mVisible = false;
 
@@ -364,9 +368,19 @@ public class Player extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        builder.setTitle("Close Video")
+                .setMessage("Are you sure you want to exit ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    youTubePlayerView.release();
+                    finish();
+                })
+                .setNegativeButton("No", ((dialog, which) -> {
+                    delayedHide(10);
 
-        youTubePlayerView.release();
-        finish();
+                }))
+                .show();
     }
 }

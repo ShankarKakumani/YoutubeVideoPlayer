@@ -10,12 +10,35 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_grey_600</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
 
     </style>
 
     <style name="AlertDialog.Blue" parent="YoutubePlayer">
         <item name="colorPrimary">@color/blue_900</item>
         <item name="colorAccent">@color/blue_900</item>
-
     </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#f00</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#00f</item>
+    </style>
+
+
+    <style name="SelectableItemTheme">
+        <item name="colorControlHighlight">@color/pink_300</item>
+    </style>
+    <style name="SelectableItemBackground">
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
 </resources>
