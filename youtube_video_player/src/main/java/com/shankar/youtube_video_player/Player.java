@@ -1,30 +1,29 @@
 package com.shankar.youtube_video_player;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.menu.MenuItem;
 
 import java.util.Objects;
 
@@ -32,8 +31,8 @@ public class Player extends AppCompatActivity {
 
     YouTubePlayerView youTubePlayerView;
     private PlayerConstants.PlaybackQuality playbackQuality;
-    ImageButton backButton, fullScreen;
     TextView qualityText;
+
 
     //For Full Screen
 
@@ -43,11 +42,7 @@ public class Player extends AppCompatActivity {
         @SuppressLint("InlinedApi")
         @Override
         public void run() {
-            // Delayed removal of status and navigation bar
 
-            // Note that some of these constants are new as of API 16 (Jelly Bean)
-            // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
             youTubePlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -73,14 +68,16 @@ public class Player extends AppCompatActivity {
      * while interacting with activity UI.
      */
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        fullScreen = findViewById(R.id.fullScreen);
-        backButton = findViewById(R.id.backButton);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
+
         playYoutubeVideo();
 
 
@@ -88,18 +85,20 @@ public class Player extends AppCompatActivity {
         delayedHide(100);
     }
 
+
+
     private void playYoutubeVideo() {
         youTubePlayerView = findViewById(R.id.youtube_player_view);
         getLifecycle().addObserver(youTubePlayerView);
 
         youTubePlayerView.getPlayerUiController().showYouTubeButton(false);
         youTubePlayerView.getPlayerUiController().showFullscreenButton(false);
-        youTubePlayerView.getPlayerUiController().showMenuButton(false);
         youTubePlayerView.getPlayerUiController().showVideoTitle(false);
         youTubePlayerView.getPlayerUiController().showBufferingProgress(true);
 
         youTubePlayerView.enterFullScreen();
 
+        initPictureInPicture(youTubePlayerView);
 
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
@@ -145,7 +144,7 @@ public class Player extends AppCompatActivity {
                         break;
                     case VIDEO_NOT_PLAYABLE_IN_EMBEDDED_PLAYER:
                         youTubePlayerView.getPlayerUiController().showYouTubeButton(true);
-                        Toast.makeText(Player.this, " Click on the Youtube Button to open this Movie/Video in Youtube : ", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Player.this, " Click on the Youtube Button to open this Movie/Video in Youtube ", Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -158,22 +157,45 @@ public class Player extends AppCompatActivity {
 
             }
 
-
         });
     }
+
 
     private void checkFullScreen() {
         if(youTubePlayerView.isFullScreen())
         {
             youTubePlayerView.exitFullScreen();
-            fullScreen.setImageDrawable(ContextCompat.getDrawable(Player.this, R.drawable.ic_fullscreen_exit_24dp));
+            //fullScreen.setImageDrawable(ContextCompat.getDrawable(Player.this, R.drawable.ic_fullscreen_exit_24dp));
         }
 
         else
         {
             youTubePlayerView.enterFullScreen();
-            fullScreen.setImageDrawable(ContextCompat.getDrawable(Player.this, R.drawable.ic_fullscreen_24dp));
+            //fullScreen.setImageDrawable(ContextCompat.getDrawable(Player.this, R.drawable.ic_fullscreen_24dp));
         }
+    }
+
+
+    private void initPictureInPicture(YouTubePlayerView youTubePlayerView) {
+        ImageView pictureInPictureView = new ImageView(this);
+        pictureInPictureView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fullscreen_24dp));
+
+        pictureInPictureView.setOnClickListener( view -> {
+            if(youTubePlayerView.isFullScreen())
+            {
+                youTubePlayerView.exitFullScreen();
+                pictureInPictureView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fullscreen_exit_24dp));
+            }
+
+            else
+            {
+                youTubePlayerView.enterFullScreen();
+                pictureInPictureView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fullscreen_24dp));
+            }
+        });
+
+        youTubePlayerView.getPlayerUiController().addView( pictureInPictureView );
+
     }
 
 
@@ -215,21 +237,12 @@ public class Player extends AppCompatActivity {
                 qualityText.setText("Def");
                 break;
         }
-        if (qualityText.getParent() != null) {
-            ((ViewGroup) qualityText.getParent()).removeView(qualityText); // <- fix
+        if (qualityText.getParent() != null ) {
+            ((ViewGroup) qualityText.getParent()).removeView(qualityText);
         }
-
-        backButton.setVisibility(View.VISIBLE);
-        fullScreen.setVisibility(View.VISIBLE);
-        youTubePlayerView.getPlayerUiController().addView(backButton);
-        youTubePlayerView.getPlayerUiController().addView(fullScreen);
         youTubePlayerView.getPlayerUiController().addView(qualityText);
 
-        fullScreen.setOnClickListener(v -> checkFullScreen());
-        backButton.setOnClickListener(v -> onBackPressed());
-
     }
-
 
     private void playerStateToString(PlayerConstants.PlayerState state) {
         switch (state) {
