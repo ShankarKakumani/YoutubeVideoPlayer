@@ -32,7 +32,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        mavenCentral()
         maven {
             url "https://jitpack.io"
         }
@@ -45,7 +44,7 @@ add YoutubeVideoPlayer
 ```groovy
 dependencies {
     
-    implementation 'com.github.ShankarKakumani:YoutubeVideoPlayer:1.0.2'
+    implementation 'com.github.ShankarKakumani:YoutubeVideoPlayer:1.0.6'
 }
 ```
 
